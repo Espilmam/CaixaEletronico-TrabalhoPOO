@@ -2,7 +2,7 @@ package persistencia;
 
 import java.sql.Connection;
 
-import modelo.AddValores;
+import modelo.AddDados;
 
 public interface BDConexaoDAO {
 	

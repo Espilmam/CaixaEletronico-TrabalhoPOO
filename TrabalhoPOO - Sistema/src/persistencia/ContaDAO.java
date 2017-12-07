@@ -1,9 +1,9 @@
 package persistencia;
 
-import modelo.AddValores;
+import modelo.AddDados;
 
 public interface ContaDAO {
 	
-	void adiciona(AddValores dados);
-	boolean verificaLogin(AddValores usuario);
+	void adiciona(AddDados dados);
+	boolean verificaLogin(AddDados usuario);
 }

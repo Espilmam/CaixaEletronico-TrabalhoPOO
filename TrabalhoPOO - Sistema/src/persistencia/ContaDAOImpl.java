@@ -5,12 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import modelo.AddValores;
+import modelo.AddDados;
 
 public class ContaDAOImpl implements ContaDAO {
 	
 	@Override
-	public void adiciona(AddValores dados){
+	public void adiciona(AddDados dados){
 		
 		Connection con = BDConexaoDAOImpl.getInstance().getConnection();	
 		String sql = "insert into Conta(nome, conta, numCartao, senha, saldo, banco, agencia) values (?,?,?,?,?,?,?)";
@@ -32,11 +32,12 @@ public class ContaDAOImpl implements ContaDAO {
 			
 		}
 	}
-
 	@Override
-	public boolean verificaLogin(AddValores usuario) {
+	public boolean verificaLogin(AddDados usuario) {
+		
 		usuario.setAgencia(null);
 		usuario.setConta(null);
+		
 		Connection con = BDConexaoDAOImpl.getInstance().getConnection();	
 		String sql = "select * from Conta" 
 		+ " where numCartao = '" + usuario.getNumCartao() + "' and senha = '" + usuario.getSenha() + "'";

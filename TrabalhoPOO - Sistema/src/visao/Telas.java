@@ -22,12 +22,12 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
-import controle.CtrAddValor;
-import controle.CtrSacar;
+import controle.CtrDadosCliente;
+import controle.CtrCedulas;
 import controle.CtrSaldo;
-import modelo.AddValores;
+import modelo.AddDados;
 import modelo.Saldo;
-import modelo.Saque;
+import modelo.Cedulas;
 
 public class Telas implements ActionListener {
 	
@@ -39,14 +39,10 @@ public class Telas implements ActionListener {
 	private static JFrame tadm;
 	private static JFrame tadd;
 	private static JFrame tsal;
-	private JPanel painelTelaLogin;
-	private JPanel painelTelaMenu;
-	private JPanel painelTelaSaque;
-	private JPanel painelTelaDep;
-	private JPanel painelTelaTransf;
-	private JPanel painelTelaAdd;
-	private JPanel painelTelaADM;
-	private JPanel painelTelaSaldo;
+	private ButtonGroup tipoTransf;
+	private ButtonGroup tipoDado;
+	private ButtonGroup tipoConta;
+	private ButtonGroup tipoPagar;
 	private JButton btnAcessar;
 	private JButton btnAddValor;
 	private JButton btnADM;
@@ -56,21 +52,34 @@ public class Telas implements ActionListener {
 	private JButton btnSaldo;
 	private JButton btnSair;
     private JButton btn2;
-    private int n2 = 0;
+    private int r$2 = 0;
 	private JButton btn5;
-	private int n5 = 0;
+	private int r$5 = 0;
 	private JButton btn10;
-	private int n10 = 0;
+	private int r$10 = 0;
 	private JButton btn20;
-	private int n20 = 0;
+	private int r$20 = 0;
 	private JButton btn50;
-	private int n50 = 0;
+	private int r$50 = 0;
 	private JButton btn100;
-	private int n100 = 0;
+	private int r$100 = 0;
 	private JButton btnZerar;
 	private JButton btnVoltar;
-	private ButtonGroup tipoConta;
-	private ButtonGroup tipoPagar;
+	private JButton btnTransferir;
+	private JButton btnAdicionar;
+	private JButton btnVerificar;
+	private JButton btnMostrar;
+	private JButton btnRemover;
+	private JComboBox<String> cbxBanco;
+	private JPanel painelTelaLogin;
+	private JPanel painelTelaMenu;
+	private JPanel painelTelaSaque;
+	private JPanel painelTelaDep;
+	private JPanel painelTelaTransf;
+	private JPanel painelTelaAdd;
+	private JPanel painelTelaADM;
+	private JPanel painelTelaSaldo;
+	private JPasswordField txtSenha;
 	private JRadioButton chkContaCor;
 	private JRadioButton chkPoupanca;
 	private JRadioButton chkCheque;
@@ -79,25 +88,29 @@ public class Telas implements ActionListener {
 	private JRadioButton chkTED;
 	private JRadioButton chkCPF;
 	private JRadioButton chkCNPJ;
-	private ButtonGroup tipoTransf;
-	private ButtonGroup tipoDado;
-	private JComboBox<String> cbxBanco;
-	private JButton btnTransferir;
-	private JButton btnAdicionar;
-	private JButton btnVerificar;
 	private JTextField txtCartao;
-	private JPasswordField txtSenha;
 	private JTextField txtNome;
 	private JTextField txtSaldo;
 	private JTextField txtAgencia;
 	private JTextField txtConta;
 	private JTextField txtLogin;
+	private JTextField txtMostraSaque;
+	private JTextField txtR$2; 
+	private JTextField txtR$5; 
+	private JTextField txtR$10; 
+	private JTextField txtR$20; 
+	private JTextField txtR$50; 
+	private JTextField txtR$100; 
 	private static Telas tl = new Telas();
-	private CtrAddValor contrConta = new CtrAddValor();
-	private CtrSacar saque = new CtrSacar();
-	private AddValores usuario = new AddValores();
-	
-	private static Saque totalCaixa = new Saque();
+	private CtrDadosCliente contrConta = new CtrDadosCliente();
+	private CtrCedulas saque = new CtrCedulas();
+	private CtrCedulas addCedula = new CtrCedulas();
+	private CtrCedulas removeCedula = new CtrCedulas();
+	private CtrCedulas zeraCedula = new CtrCedulas();
+	private AddDados usuario = new AddDados();
+	private Cedulas sq = new Cedulas();
+	private int aux = 0;
+	private static Cedulas totalCaixa = new Cedulas();
 	
 	public static void main(String[] args) {
 		
@@ -118,6 +131,9 @@ public class Telas implements ActionListener {
 		JPanel painelLogin = new JPanel ();
 		JLabel login = new JLabel("Nº cartão:");
 		txtLogin = new JTextField(20);
+		
+		PlainDocument verLogin = (PlainDocument) txtLogin.getDocument();
+		verLogin.setDocumentFilter(new verificaTexto(16));
 		
 		painelLogin.add(login);
 		painelLogin.add(txtLogin);
@@ -164,6 +180,8 @@ public class Telas implements ActionListener {
 		
 		totalCaixa = saque.recebeNotas();
 		
+		//ta.setUndecorated(true);
+		//ta.setLocationRelativeTo(null);
 		ta.setContentPane(painelTelaLogin);		
 		ta.setVisible(true);
 		ta.setSize(600,400);	
@@ -225,9 +243,6 @@ public class Telas implements ActionListener {
 		painelTelaMenu.add(painelBotoesEsquerdo);
 		painelTelaMenu.add(painelSuperior);
 		painelTelaMenu.add(painelBotoesDireito);
-		
-			
-
 	}
 	public void telaSaque() {
 		
@@ -259,7 +274,7 @@ public class Telas implements ActionListener {
 		btnVoltar.setActionCommand("VoltarSaque");
 		
 		JLabel lblSaque = new JLabel ("Valor a ser sacado:");
-		JTextField txtMostraSaque = new JTextField(10);
+		txtMostraSaque = new JTextField(10);
 		JPanel pnSaque = new JPanel();
 		pnSaque.add(lblSaque);
 		pnSaque.add(txtMostraSaque);
@@ -337,14 +352,22 @@ public class Telas implements ActionListener {
 		btnDeposito = new JButton("Depositar");
 		btnDeposito.addActionListener(this);
 		
-		JLabel lblDeposito = new JLabel("Agência: ");
+		JLabel lblAgencia = new JLabel("Agência: ");
 		JTextField txtAgencia = new JTextField(20);
+		
+		PlainDocument verAgencia = (PlainDocument) txtAgencia.getDocument();
+		verAgencia.setDocumentFilter(new verificaTexto(4));
+		
 		JLabel lblNumConta = new JLabel("Número da conta: ");
 		JTextField txtNumConta = new JTextField(20);
+		
+		PlainDocument verNumConta = (PlainDocument) txtNumConta.getDocument();
+		verNumConta.setDocumentFilter(new verificaTexto(10));
+		
 		JLabel lblValor = new JLabel("Valor do depósito: ");
 		JTextField txtValor = new JTextField(20);
 		JPanel painelDep = new JPanel(new GridLayout(3,3));
-		painelDep.add(lblDeposito);
+		painelDep.add(lblAgencia);
 		painelDep.add(txtAgencia);
 		painelDep.add(lblNumConta);
 		painelDep.add(txtNumConta);
@@ -375,7 +398,6 @@ public class Telas implements ActionListener {
 		tp.setSize(600, 200);
 		tp.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
-	
 	public void telaTransferencia() {
 		
 		painelTelaTransf = new JPanel(new BorderLayout());
@@ -409,17 +431,15 @@ public class Telas implements ActionListener {
 		
 		JLabel lblBanco = new JLabel("Banco");
 		cbxBanco = new JComboBox<String>();
-		cbxBanco.addItem("Itau");
+		cbxBanco.addItem("Itaú");
 		cbxBanco.addItem("Santander");
 		cbxBanco.addItem("Banco do Brasil");
 		cbxBanco.addItem("Bradesco");
-		cbxBanco.addItem("Caixa Economica");
+		cbxBanco.addItem("Caixa Econômica");
 		cbxBanco.addItem("HSBC");
 		cbxBanco.addItem("Banco Original");
 		JPanel painelConta = new JPanel();
 		
-		JLabel lblData = new JLabel("Data: ");
-		JTextField txtData = new JTextField(10);
 		JLabel lblValor = new JLabel("Valor: ");
 		JTextField txtValor = new JTextField(15);
 		JPanel painelBanco = new JPanel();
@@ -445,8 +465,6 @@ public class Telas implements ActionListener {
 		painelConta.add(txtConta);
 		painelBanco.add(lblBanco);
 		painelBanco.add(cbxBanco);
-		painelData.add(lblData);
-		painelData.add(txtData);
 		painelValor.add(lblValor);
 		painelValor.add(txtValor);
 		painelEsquerdo.add(painelTransf);
@@ -534,49 +552,63 @@ public class Telas implements ActionListener {
 		JPanel painelBotoesDireito = new JPanel(new GridLayout(5,1));
 		JPanel painelGeral = new JPanel(new GridLayout(2,1));
 		
-		btnZerar = new JButton("Zerar Tudo");	
 		btnAdicionar = new JButton("Adicionar cédulas");
 		btnAdicionar.addActionListener(this);
 		btnAdicionar.setActionCommand("AdicionarCedula");
+		btnRemover = new JButton("Remover cédulas");
+		btnRemover.addActionListener(this);
+		btnRemover.setActionCommand("RemoverCedula");
+		btnMostrar = new JButton("Mostrar cedulas");
+		btnMostrar.addActionListener(this);
+		btnMostrar.setActionCommand("MostrarCedula");
 		btnVoltar = new JButton("Voltar");
 		btnVoltar.addActionListener(this);
 		btnVoltar.setActionCommand("VoltarADM");
+		btnZerar = new JButton("Zerar BD");	
+		btnZerar.addActionListener(this);
+		btnZerar.setActionCommand("ZerarCedula");
 		
 		JLabel lbl2 = new JLabel ("R$ 2");
-		JTextField txt2 = new JTextField(10);
+		txtR$2 = new JTextField(10);
+		txtR$2.setText("0");
 		JPanel painelR$2 = new JPanel();
 		painelR$2.add(lbl2);
-		painelR$2.add(txt2);
+		painelR$2.add(txtR$2);
 		
 		JLabel lbl5 = new JLabel ("R$ 5");
-		JTextField txt5 = new JTextField(10);
+		txtR$5 = new JTextField(10);
+		txtR$5.setText("0");
 		JPanel painelR$5 = new JPanel();
 		painelR$5.add(lbl5);
-		painelR$5.add(txt5);
+		painelR$5.add(txtR$5);
 		
 		JLabel lbl10 = new JLabel ("R$ 10");
-		JTextField txt10 = new JTextField(10);
+		txtR$10 = new JTextField(10);
+		txtR$10.setText("0");
 		JPanel painelR$10 = new JPanel();
 		painelR$10.add(lbl10);
-		painelR$10.add(txt10);
+		painelR$10.add(txtR$10);
 		
 		JLabel lbl20 = new JLabel ("R$ 20");
-		JTextField txt20 = new JTextField(10);
+		txtR$20 = new JTextField(10);
+		txtR$20.setText("0");
 		JPanel painelR$20 = new JPanel();
 		painelR$20.add(lbl20);
-		painelR$20.add(txt20);
+		painelR$20.add(txtR$20);
 		
 		JLabel lbl50 = new JLabel ("R$ 50");
-		JTextField txt50 = new JTextField(10);
+		txtR$50 = new JTextField(10);
+		txtR$50.setText("0");
 		JPanel painelR$50 = new JPanel();
 		painelR$50.add(lbl50);
-		painelR$50.add(txt50);
+		painelR$50.add(txtR$50);
 		
 		JLabel lbl100 = new JLabel ("R$ 100");
-		JTextField txt100 = new JTextField(10);
+		txtR$100 = new JTextField(10);
+		txtR$100.setText("0");
 		JPanel painelR$100 = new JPanel();
 		painelR$100.add(lbl100);
-		painelR$100.add(txt100);
+		painelR$100.add(txtR$100);
 		
 		JLabel lblTotal = new JLabel("Total no caixa");
 		JTextField txtTotal = new JTextField(15);
@@ -587,8 +619,10 @@ public class Telas implements ActionListener {
 		
 		JPanel painelBaixo = new JPanel();	
 		painelBaixo.add(btnAdicionar);
-		painelBaixo.add(btnVoltar);
+		painelBaixo.add(btnRemover);
+		painelBaixo.add(btnMostrar);
 		painelBaixo.add(btnZerar);	
+		painelBaixo.add(btnVoltar);
 			
 		painelBotoesEsquerdo.add(new JPanel());
 		painelBotoesEsquerdo.add(new JPanel());
@@ -711,13 +745,11 @@ public class Telas implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg) {
 		
-		Saque sq = new Saque();
-		
 		String cmd = arg.getActionCommand();
 		
 		if ("Acessar".equals(cmd)) {
 			
-			Login();
+			login();
 		} 
 		else if ("Adicionar Valores...".equals(cmd)) {
 			
@@ -730,7 +762,7 @@ public class Telas implements ActionListener {
 		}
 		else if ("AdicionarDados".equals(cmd)) {
 			
-			ColocarValores();
+			colocarDados();
 		}
 		else if ("Admin".equals(cmd)) {
 			
@@ -742,7 +774,20 @@ public class Telas implements ActionListener {
 			System.exit(0);
 		}
 		else if ("AdicionarCedula".equals(cmd)) {
-				
+			
+			colocarDinheiro();
+		}
+		else if ("RemoverCedula".equals(cmd)) {
+			
+			removerDinheiro();
+		}
+		else if ("MostrarCedula".equals(cmd)) {
+			
+			mostrarDinheiro();
+		}
+		else if ("ZerarCedula".equals(cmd)) {
+			
+			zerarDinheiro();
 		}
 		else if ("VoltarADM".equals(cmd)) {
 			
@@ -751,40 +796,53 @@ public class Telas implements ActionListener {
 		else if ("Realizar Saque".equals(cmd)) {
 			
 			ts = new JFrame("Saque");
+			zerarCedulasTemp();
 		    tl.telaSaque();
 		}
 		else if ("ZerarSaque".equals(cmd)) {
 			
+			zerarCedulasTemp();
 		}
-		else if ("btn2".equals(cmd)) {
+		else if ("2".equals(cmd)) {
 			
-			n2++;
-			sq.setN2(n2);
+			int nota2 = 2;
+			r$2++;
+			totalSaque(nota2);
+			sq.setN2(r$2);
 		}
-		else if ("btn5".equals(cmd)) {
-			
-			n5++;
-			sq.setN5(n5);
+		else if ("5".equals(cmd)) {
+			int nota5 = 5;
+			r$5++;
+			totalSaque(nota5);
+			sq.setN5(r$5);
 		}
-		else if ("btn10".equals(cmd)) {
+		else if ("10".equals(cmd)) {
 			
-			n10++;
-			sq.setN10(n10);
+			int nota10 = 10;
+			r$10++;
+			totalSaque(nota10);
+			sq.setN10(r$10);
 		}
-		else if ("btn20".equals(cmd)) {
+		else if ("20".equals(cmd)) {
 			
-			n20++;
-			sq.setN20(n20);
+			int nota20 = 20;
+			r$20++;
+			totalSaque(nota20);
+			sq.setN20(r$20);
 		}
-		else if ("btn50".equals(cmd)) {
+		else if ("50".equals(cmd)) {
 			
-			n50++;
-			sq.setN50(n50);
+			int nota50 = 50;
+			r$50++;
+			totalSaque(nota50);
+			sq.setN50(r$50);
 		}
-		else if ("btn100".equals(cmd)) {
+		else if ("100".equals(cmd)) {
 			
-			n100++;
-			sq.setN100(n100);
+			int nota100 = 100;
+			r$100++;
+			totalSaque(nota100);
+			sq.setN100(r$100);
 		}
 		else if ("Sacar".equals(cmd)) {
 			
@@ -792,6 +850,7 @@ public class Telas implements ActionListener {
 		}
 		else if ("VoltarSaque".equals(cmd)) {
 			
+			zerarCedulasTemp();
 			ts.dispose();
 		}
 		else if ("Realizar Depósito".equals(cmd)) {
@@ -833,8 +892,10 @@ public class Telas implements ActionListener {
 			painelTelaLogin.setVisible(true);
 		}	
 	}
-	public void Login() {
+	public void login() {
+		
 		String senha = new String(txtSenha.getPassword());
+		
 		if (txtLogin.getText().isEmpty() || senha.isEmpty()) {
 			
 			JOptionPane.showMessageDialog(null,"Os campos DEVEM ser preenchidos");
@@ -845,11 +906,12 @@ public class Telas implements ActionListener {
 			
 			boolean ok = contrConta.verificaLogin(usuario);
 			
-			if (ok == false){
-				JOptionPane.showMessageDialog(null, "Conta não existe");
+			if (ok == false) {
+				
+				JOptionPane.showMessageDialog(null, "Nº do cartão ou senha inválidos");
 			} 
 			else {
-				System.out.println("N2" +totalCaixa.getN2() + "n5" + totalCaixa.getN5() + "n50" + totalCaixa.getN50());
+				
 				telaMenu();
 				painelTelaLogin.setVisible(false);
 				ta.setContentPane(painelTelaMenu);	
@@ -857,13 +919,12 @@ public class Telas implements ActionListener {
 				ta.invalidate();
 				ta.revalidate();
 				ta.repaint();
-			}
-				
+			}				
 		}
 	}
-	public void ColocarValores() {
+	public void colocarDados() {
 		
-		AddValores adv = new AddValores();
+		AddDados addDados = new AddDados();
 		
 		String senha = new String(txtSenha.getPassword());
 		
@@ -877,36 +938,156 @@ public class Telas implements ActionListener {
 		}
 		else {
 			
-			adv.setSenha(senha);
-			adv.setBanco(cbxBanco.getSelectedItem().toString());
-			adv.setAgencia(txtAgencia.getText());
-			adv.setConta(txtConta.getText());
-			adv.setNome(txtNome.getText());
-			adv.setNumCartao(txtCartao.getText());
-			adv.setSaldo(Double.parseDouble(txtSaldo.getText()));
+			addDados.setSenha(senha);
+			addDados.setBanco(cbxBanco.getSelectedItem().toString());
+			addDados.setAgencia(txtAgencia.getText());
+			addDados.setConta(txtConta.getText());
+			addDados.setNome(txtNome.getText());
+			addDados.setNumCartao(txtCartao.getText());
+			addDados.setSaldo(Double.parseDouble(txtSaldo.getText()));
 			
-			contrConta.criaConta(adv);
+			contrConta.criaConta(addDados);
 		}
+	}
+	public void colocarDinheiro() {
+		
+		if (txtR$2.getText().isEmpty() || txtR$5.getText().isEmpty() || txtR$10.getText().isEmpty() || txtR$20.getText().isEmpty()
+		    || txtR$50.getText().isEmpty() || txtR$100.getText().isEmpty() || Integer.parseInt(txtR$2.getText()) < 0
+		    || Integer.parseInt(txtR$5.getText()) < 0 || Integer.parseInt(txtR$10.getText()) < 0 || Integer.parseInt(txtR$20.getText()) < 0
+		    || Integer.parseInt(txtR$50.getText()) < 0 || Integer.parseInt(txtR$100.getText()) < 0) {
+			
+			JOptionPane.showMessageDialog(null,"Adicione um valor válido em cada espaço");
+		}
+		else {
+			
+			Cedulas tempAdiciona = totalCaixa;
+			
+			tempAdiciona.setN2(tempAdiciona.getN2() + Integer.parseInt(txtR$2.getText()));
+			tempAdiciona.setN5(tempAdiciona.getN5() + Integer.parseInt(txtR$5.getText()));
+			tempAdiciona.setN10(tempAdiciona.getN10() + Integer.parseInt(txtR$10.getText()));
+			tempAdiciona.setN20(tempAdiciona.getN20() + Integer.parseInt(txtR$20.getText()));
+			tempAdiciona.setN50(tempAdiciona.getN50() + Integer.parseInt(txtR$50.getText()));
+			tempAdiciona.setN100(tempAdiciona.getN100() + Integer.parseInt(txtR$100.getText()));
+			
+			totalCaixa = addCedula.tratarCedulas(tempAdiciona);
+		}
+	}
+	public void removerDinheiro() {
+		
+		if (txtR$2.getText().isEmpty() || txtR$5.getText().isEmpty() || txtR$10.getText().isEmpty() || txtR$20.getText().isEmpty()
+			|| txtR$50.getText().isEmpty() || txtR$100.getText().isEmpty() || Integer.parseInt(txtR$2.getText()) < 0
+			|| Integer.parseInt(txtR$5.getText()) < 0 || Integer.parseInt(txtR$10.getText()) < 0 || Integer.parseInt(txtR$20.getText()) < 0
+			|| Integer.parseInt(txtR$50.getText()) < 0 || Integer.parseInt(txtR$100.getText()) < 0) {
+				
+			JOptionPane.showMessageDialog(null,"Adicione um valor válido em cada espaço");
+		}
+		else {
+			
+			Cedulas tempRemove = totalCaixa;
+			
+			tempRemove.setN2(tempRemove.getN2());
+			tempRemove.setN5(tempRemove.getN5());
+			tempRemove.setN10(tempRemove.getN10());
+			tempRemove.setN20(tempRemove.getN20());
+			tempRemove.setN50(tempRemove.getN50());
+			tempRemove.setN100(tempRemove.getN100());
+			
+			if (tempRemove.getN2() - Integer.parseInt(txtR$2.getText()) < 0 || tempRemove.getN5() - Integer.parseInt(txtR$5.getText()) < 0
+			   || tempRemove.getN10() - Integer.parseInt(txtR$10.getText()) < 0 || tempRemove.getN20() - Integer.parseInt(txtR$20.getText()) < 0
+			   || tempRemove.getN50() - Integer.parseInt(txtR$50.getText()) < 0 || tempRemove.getN100() - Integer.parseInt(txtR$100.getText()) < 0) {
+				
+				JOptionPane.showMessageDialog(null,"Valor da retirada maior que o valor armazenado. Operação cancelada");
+			}
+			else {
+				
+				tempRemove.setN2(tempRemove.getN2() - Integer.parseInt(txtR$2.getText()));
+				tempRemove.setN5(tempRemove.getN5() - Integer.parseInt(txtR$5.getText()));
+				tempRemove.setN10(tempRemove.getN10() - Integer.parseInt(txtR$10.getText()));
+				tempRemove.setN20(tempRemove.getN20() - Integer.parseInt(txtR$20.getText()));
+				tempRemove.setN50(tempRemove.getN50() - Integer.parseInt(txtR$50.getText()));
+				tempRemove.setN100(tempRemove.getN100() - Integer.parseInt(txtR$100.getText()));
+				
+				totalCaixa = removeCedula.tratarCedulas(tempRemove);
+			}
+		}
+	}
+	public void mostrarDinheiro() {
+		
+		Cedulas tempMostra = totalCaixa;
+		
+		tempMostra.setN2(tempMostra.getN2());
+		tempMostra.setN5(tempMostra.getN5());
+		tempMostra.setN10(tempMostra.getN10());
+		tempMostra.setN20(tempMostra.getN20());
+		tempMostra.setN50(tempMostra.getN50());
+		tempMostra.setN100(tempMostra.getN100());
+		
+			
+		txtR$2.setText(Integer.toString(tempMostra.getN2()));
+		txtR$5.setText(Integer.toString(tempMostra.getN5()));
+		txtR$10.setText(Integer.toString(tempMostra.getN10()));
+		txtR$20.setText(Integer.toString(tempMostra.getN20()));
+		txtR$50.setText(Integer.toString(tempMostra.getN50()));
+		txtR$100.setText(Integer.toString(tempMostra.getN100()));		
+	}
+	public void zerarDinheiro() {
+		
+		Cedulas tempZerar = totalCaixa;
+		
+		tempZerar.setN2(tempZerar.getN2() - tempZerar.getN2());
+		tempZerar.setN5(tempZerar.getN5() - tempZerar.getN5());
+		tempZerar.setN10(tempZerar.getN10() - tempZerar.getN10());
+		tempZerar.setN20(tempZerar.getN20() - tempZerar.getN20());
+		tempZerar.setN50(tempZerar.getN50() - tempZerar.getN50());
+		tempZerar.setN100(tempZerar.getN100() - tempZerar.getN100());
+		
+		totalCaixa = zeraCedula.tratarCedulas(tempZerar);
 	}
 	public void vouSacar() {
 		
-		Saque tempSaque = totalCaixa;
-		/* CODIGO PARA SUBTRAIR DO CAIXA (CAIXATEMP)AQUI*/
+		Cedulas tempSaque = totalCaixa;
 		
-		tempSaque.setN2(tempSaque.getN2() - n2);
-		tempSaque.setN5(tempSaque.getN5() - n5);
-		tempSaque.setN10(tempSaque.getN10() - n10);
-		tempSaque.setN20(tempSaque.getN20() - n20);
-		tempSaque.setN50(tempSaque.getN50() - n50);
-		tempSaque.setN100(tempSaque.getN100() - n100);
+		tempSaque.setN2(tempSaque.getN2() - r$2);
+		tempSaque.setN5(tempSaque.getN5() - r$5);
+		tempSaque.setN10(tempSaque.getN10() - r$10);
+		tempSaque.setN20(tempSaque.getN20() - r$20);
+		tempSaque.setN50(tempSaque.getN50() - r$50);
+		tempSaque.setN100(tempSaque.getN100() - r$100);
 		
-		System.out.println("passei3");
+		//usuario.modificaSaldo(totalSaque(aux));
 		
 		totalCaixa = saque.sacarValor(tempSaque, usuario);
+		zerarCedulasTemp();
+	}
+	public void totalSaque(int valor) {
+			
+		aux = aux + valor;
+		
+		if (aux > usuario.getSaldo()) {
+			
+			JOptionPane.showMessageDialog(null, "O valor desejado é maior que seu saldo. Operação cancelada");
+			zerarCedulasTemp();
+		}
+		else {
+			
+			txtMostraSaque.setText(Integer.toString(aux));	
+		}
+	}
+	public void zerarCedulasTemp() {
+		
+		sq.setN2(0);
+		sq.setN5(0);
+		sq.setN10(0);
+		sq.setN20(0);
+		sq.setN50(0);
+		sq.setN100(0);
+		r$2 = 0; r$5 = 0 ; r$10 = 0; r$20 = 0; r$50 = 0; r$100 = 0;	
+		aux = 0;
+		txtMostraSaque.setText(Integer.toString(aux));
 	}
 	public void verSaldo() {
 	    
-		AddValores adv = new AddValores();
+		AddDados adv = new AddDados();
 		
 		if (txtCartao.getText().isEmpty()) {
 			

@@ -1,6 +1,6 @@
 package controle;
 
-import modelo.AddValores;
+import modelo.AddDados;
 
 public class CtrSaldo {
 	
