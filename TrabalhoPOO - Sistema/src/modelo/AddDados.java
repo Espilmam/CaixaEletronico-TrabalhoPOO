@@ -9,6 +9,8 @@ public class AddDados {
 	private String banco;
 	private String agencia;
 	private String conta;
+	private double valor;
+	
 	
 	public String getNumCartao() {
 		return numCartao;
@@ -51,5 +53,11 @@ public class AddDados {
 	}
 	public void setConta(String conta) {
 		this.conta = conta;
+	}
+	public double getValor() {
+		return valor;
+	}
+	public void setValor(double valor) {
+		this.valor = valor;
 	}
 }

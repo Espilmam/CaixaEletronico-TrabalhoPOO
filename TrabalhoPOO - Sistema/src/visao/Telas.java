@@ -24,7 +24,6 @@ import javax.swing.text.PlainDocument;
 
 import controle.CtrDadosCliente;
 import controle.CtrCedulas;
-import controle.CtrSaldo;
 import modelo.AddDados;
 import modelo.Saldo;
 import modelo.Cedulas;
@@ -94,6 +93,7 @@ public class Telas implements ActionListener {
 	private JTextField txtAgencia;
 	private JTextField txtConta;
 	private JTextField txtLogin;
+	private JTextField txtValor;
 	private JTextField txtMostraSaque;
 	private JTextField txtR$2; 
 	private JTextField txtR$5; 
@@ -102,7 +102,8 @@ public class Telas implements ActionListener {
 	private JTextField txtR$50; 
 	private JTextField txtR$100; 
 	private static Telas tl = new Telas();
-	private CtrDadosCliente contrConta = new CtrDadosCliente();
+	private CtrDadosCliente ctrConta = new CtrDadosCliente();
+	private CtrDadosCliente ctrDeposito = new CtrDadosCliente();
 	private CtrCedulas saque = new CtrCedulas();
 	private CtrCedulas addCedula = new CtrCedulas();
 	private CtrCedulas removeCedula = new CtrCedulas();
@@ -133,7 +134,7 @@ public class Telas implements ActionListener {
 		txtLogin = new JTextField(20);
 		
 		PlainDocument verLogin = (PlainDocument) txtLogin.getDocument();
-		verLogin.setDocumentFilter(new verificaTexto(16));
+		verLogin.setDocumentFilter(new verificaTexto(16, "Int"));
 		
 		painelLogin.add(login);
 		painelLogin.add(txtLogin);
@@ -178,8 +179,7 @@ public class Telas implements ActionListener {
 		painelTelaLogin.add(painelBotoes);
 		painelTelaLogin.add(new JPanel());
 		
-		totalCaixa = saque.recebeNotas();
-		
+		usuario = ctrDeposito.recebeSaldo();
 		//ta.setUndecorated(true);
 		//ta.setLocationRelativeTo(null);
 		ta.setContentPane(painelTelaLogin);		
@@ -353,24 +353,37 @@ public class Telas implements ActionListener {
 		btnDeposito.addActionListener(this);
 		
 		JLabel lblAgencia = new JLabel("Agência: ");
-		JTextField txtAgencia = new JTextField(20);
+		txtAgencia = new JTextField(20);
 		
 		PlainDocument verAgencia = (PlainDocument) txtAgencia.getDocument();
-		verAgencia.setDocumentFilter(new verificaTexto(4));
+		verAgencia.setDocumentFilter(new verificaTexto(4, "Int"));
 		
 		JLabel lblNumConta = new JLabel("Número da conta: ");
-		JTextField txtNumConta = new JTextField(20);
+		txtConta = new JTextField(20);
+		PlainDocument verNumConta = (PlainDocument) txtConta.getDocument();
+		verNumConta.setDocumentFilter(new verificaTexto(10, "Int"));
 		
-		PlainDocument verNumConta = (PlainDocument) txtNumConta.getDocument();
-		verNumConta.setDocumentFilter(new verificaTexto(10));
+		JLabel lblBanco = new JLabel("Banco");
+		cbxBanco = new JComboBox<String>();
+		cbxBanco.addItem("Itaú");
+		cbxBanco.addItem("Santander");
+		cbxBanco.addItem("Banco do Brasil");
+		cbxBanco.addItem("Bradesco");
+		cbxBanco.addItem("Caixa Econômica");
+		cbxBanco.addItem("HSBC");
+		cbxBanco.addItem("Banco Original");
 		
 		JLabel lblValor = new JLabel("Valor do depósito: ");
-		JTextField txtValor = new JTextField(20);
-		JPanel painelDep = new JPanel(new GridLayout(3,3));
+	    txtValor = new JTextField(20);		
+		PlainDocument vertxtValor = (PlainDocument) txtValor.getDocument();
+		vertxtValor.setDocumentFilter(new verificaTexto(10,"Int"));	
+		JPanel painelDep = new JPanel(new GridLayout(4,3));
+		painelDep.add(lblBanco);
+		painelDep.add(cbxBanco);
 		painelDep.add(lblAgencia);
 		painelDep.add(txtAgencia);
 		painelDep.add(lblNumConta);
-		painelDep.add(txtNumConta);
+		painelDep.add(txtConta);
 		painelDep.add(lblValor);
 		painelDep.add(txtValor);
 		
@@ -395,7 +408,7 @@ public class Telas implements ActionListener {
 		
 		tp.setContentPane(painelTelaDep);
 		tp.setVisible(true);
-		tp.setSize(600, 200);
+		tp.setSize(600, 300);
 		tp.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 	public void telaTransferencia() {
@@ -420,14 +433,22 @@ public class Telas implements ActionListener {
 	    JPanel painelDest = new JPanel();
 	    
 	    JTextField txtCPFCNPJ = new JTextField(15);
+	    PlainDocument verCPFCNPJ = (PlainDocument) txtCPFCNPJ.getDocument();    // <----- VERIFICAR 
+		verCPFCNPJ.setDocumentFilter(new verificaTexto(11, "Int"));
 	    JPanel painelCPFCNPJ = new JPanel();
 	    painelCPFCNPJ.add(txtCPFCNPJ);
 	    
 		JLabel lblAgencia = new JLabel("Agência: ");
-		JTextField txtAgencia = new JTextField(5);		
-		JLabel lblConta = new JLabel("Conta: ");
-		JTextField txtConta = new JTextField(10);
+		txtAgencia = new JTextField(5);	
+		PlainDocument verAgencia = (PlainDocument) txtAgencia.getDocument();
+		verAgencia.setDocumentFilter(new verificaTexto(4, "Int"));
 		JPanel painelAgencia = new JPanel();
+		
+		JLabel lblConta = new JLabel("Conta: ");
+		txtConta = new JTextField(10);
+		PlainDocument verConta = (PlainDocument) txtConta.getDocument();
+		verConta.setDocumentFilter(new verificaTexto(10, "Int"));
+		JPanel painelConta = new JPanel();	
 		
 		JLabel lblBanco = new JLabel("Banco");
 		cbxBanco = new JComboBox<String>();
@@ -438,12 +459,12 @@ public class Telas implements ActionListener {
 		cbxBanco.addItem("Caixa Econômica");
 		cbxBanco.addItem("HSBC");
 		cbxBanco.addItem("Banco Original");
-		JPanel painelConta = new JPanel();
-		
-		JLabel lblValor = new JLabel("Valor: ");
-		JTextField txtValor = new JTextField(15);
 		JPanel painelBanco = new JPanel();
-		JPanel painelData = new JPanel();
+			
+		JLabel lblValor = new JLabel("Valor: ");
+		txtValor = new JTextField(15);	
+		PlainDocument verValor = (PlainDocument) txtValor.getDocument();
+		verValor.setDocumentFilter(new verificaTexto(15,"Double"));
 		JPanel painelValor = new JPanel();
 		
 		btnVoltar = new JButton("Voltar");
@@ -472,7 +493,6 @@ public class Telas implements ActionListener {
 		painelEsquerdo.add(painelAgencia);
 		painelEsquerdo.add(painelConta);
 		painelEsquerdo.add(painelBanco);
-		painelEsquerdo.add(painelData);
 		painelEsquerdo.add(painelValor);
 		painelBaixo.add(btnTransferir);
 		painelBaixo.add(btnVoltar);
@@ -498,11 +518,10 @@ public class Telas implements ActionListener {
 		btnVoltar.setActionCommand("VoltarSaldo");
 		
 		JLabel lblCartao = new JLabel("Numero do Cartão:");
-		JTextField txtCartao = new JTextField(15);
-		JPanel painelCartao = new JPanel();
-		
+		JTextField txtCartao = new JTextField(16);
 		PlainDocument verCartao = (PlainDocument) txtCartao.getDocument();
-		verCartao.setDocumentFilter(new verificaTexto(16));
+		verCartao.setDocumentFilter(new verificaTexto(16, "Int"));
+		JPanel painelCartao = new JPanel();
 		
 		JLabel lblNome = new JLabel("Nome:");
 		JTextField txtNome = new JTextField(20);
@@ -570,6 +589,8 @@ public class Telas implements ActionListener {
 		
 		JLabel lbl2 = new JLabel ("R$ 2");
 		txtR$2 = new JTextField(10);
+		PlainDocument vertxtR$2 = (PlainDocument) txtR$2.getDocument();
+		vertxtR$2.setDocumentFilter(new verificaTexto(5, "Int"));
 		txtR$2.setText("0");
 		JPanel painelR$2 = new JPanel();
 		painelR$2.add(lbl2);
@@ -577,6 +598,8 @@ public class Telas implements ActionListener {
 		
 		JLabel lbl5 = new JLabel ("R$ 5");
 		txtR$5 = new JTextField(10);
+		PlainDocument vertxtR$5 = (PlainDocument) txtR$5.getDocument();
+		vertxtR$5.setDocumentFilter(new verificaTexto(5, "Int"));
 		txtR$5.setText("0");
 		JPanel painelR$5 = new JPanel();
 		painelR$5.add(lbl5);
@@ -584,6 +607,8 @@ public class Telas implements ActionListener {
 		
 		JLabel lbl10 = new JLabel ("R$ 10");
 		txtR$10 = new JTextField(10);
+		PlainDocument vertxtR$10 = (PlainDocument) txtR$10.getDocument();
+		vertxtR$10.setDocumentFilter(new verificaTexto(5, "Int"));
 		txtR$10.setText("0");
 		JPanel painelR$10 = new JPanel();
 		painelR$10.add(lbl10);
@@ -591,6 +616,8 @@ public class Telas implements ActionListener {
 		
 		JLabel lbl20 = new JLabel ("R$ 20");
 		txtR$20 = new JTextField(10);
+		PlainDocument vertxtR$20 = (PlainDocument) txtR$20.getDocument();
+		vertxtR$20.setDocumentFilter(new verificaTexto(5, "Int"));
 		txtR$20.setText("0");
 		JPanel painelR$20 = new JPanel();
 		painelR$20.add(lbl20);
@@ -598,6 +625,8 @@ public class Telas implements ActionListener {
 		
 		JLabel lbl50 = new JLabel ("R$ 50");
 		txtR$50 = new JTextField(10);
+		PlainDocument vertxtR$50 = (PlainDocument) txtR$50.getDocument();
+		vertxtR$50.setDocumentFilter(new verificaTexto(5, "Int"));
 		txtR$50.setText("0");
 		JPanel painelR$50 = new JPanel();
 		painelR$50.add(lbl50);
@@ -605,6 +634,8 @@ public class Telas implements ActionListener {
 		
 		JLabel lbl100 = new JLabel ("R$ 100");
 		txtR$100 = new JTextField(10);
+		PlainDocument vertxtR$100 = (PlainDocument) txtR$100.getDocument();
+		vertxtR$100.setDocumentFilter(new verificaTexto(5, "Int"));
 		txtR$100.setText("0");
 		JPanel painelR$100 = new JPanel();
 		painelR$100.add(lbl100);
@@ -664,7 +695,9 @@ public class Telas implements ActionListener {
 		JPanel painelBotoes = new JPanel();	
 		
 		JLabel lblCartao = new JLabel("Numero do Cartão:");
-		txtCartao = new JTextField(15);
+		txtCartao = new JTextField(16);
+		PlainDocument verCartao = (PlainDocument) txtCartao.getDocument();
+		verCartao.setDocumentFilter(new verificaTexto(16, "Int"));
 		JPanel painelCartao = new JPanel();
 		
 		JLabel lblSenha = new JLabel("Senha:");
@@ -672,11 +705,15 @@ public class Telas implements ActionListener {
 		JPanel painelSenha = new JPanel();
 		
 		JLabel lblNome = new JLabel("Nome:");
-		txtNome = new JTextField(20);
+		txtNome = new JTextField(30);
+		PlainDocument verNome = (PlainDocument) txtNome.getDocument();
+		verNome.setDocumentFilter(new verificaTexto(30, "Texto"));
 		JPanel painelNome = new JPanel();
 		
 		JLabel lblSaldo = new JLabel("Saldo:");
 		txtSaldo = new JTextField(10);
+		PlainDocument verSaldo = (PlainDocument) txtSaldo.getDocument();
+		verSaldo.setDocumentFilter(new verificaTexto(10, "Int"));
 		JPanel painelSaldo = new JPanel();
 		
 		JLabel lblBanco = new JLabel("Banco:");
@@ -692,20 +729,15 @@ public class Telas implements ActionListener {
 		
 		JLabel lblAgencia = new JLabel("Agencia");
 		txtAgencia = new JTextField(5);
+		PlainDocument verAgencia = (PlainDocument) txtAgencia.getDocument();
+		verAgencia.setDocumentFilter(new verificaTexto(5, "Int"));
 		JPanel painelAgencia = new JPanel();
 		
 		JLabel lblConta = new JLabel("Conta");
 		txtConta = new JTextField(10);
-		JPanel painelConta = new JPanel();
-		
-		PlainDocument verCartao = (PlainDocument) txtCartao.getDocument();
-		verCartao.setDocumentFilter(new verificaTexto(16));
-		
-		PlainDocument verAgencia = (PlainDocument) txtAgencia.getDocument();
-		verAgencia.setDocumentFilter(new verificaTexto(4));
-		
 		PlainDocument verConta = (PlainDocument) txtConta.getDocument();
-		verConta.setDocumentFilter(new verificaTexto(10));
+		verConta.setDocumentFilter(new verificaTexto(10, "Int"));
+		JPanel painelConta = new JPanel();	
 		
 		painelCartao.add(lblCartao);
 		painelCartao.add(txtCartao);
@@ -796,7 +828,6 @@ public class Telas implements ActionListener {
 		else if ("Realizar Saque".equals(cmd)) {
 			
 			ts = new JFrame("Saque");
-			zerarCedulasTemp();
 		    tl.telaSaque();
 		}
 		else if ("ZerarSaque".equals(cmd)) {
@@ -858,6 +889,10 @@ public class Telas implements ActionListener {
 			tp = new JFrame("Depósito");
 			tl.telaDeposito();
 		}
+		else if ("Depositar".equals(cmd)) {
+			
+			realizaDeposito();
+		}
 		else if ("VoltarDeposito".equals(cmd)) {
 			
 			tp.dispose();
@@ -904,7 +939,7 @@ public class Telas implements ActionListener {
 			usuario.setNumCartao(txtLogin.getText());
 			usuario.setSenha(senha);
 			
-			boolean ok = contrConta.verificaLogin(usuario);
+			boolean ok = ctrConta.verificaLogin(usuario);
 			
 			if (ok == false) {
 				
@@ -946,7 +981,7 @@ public class Telas implements ActionListener {
 			addDados.setNumCartao(txtCartao.getText());
 			addDados.setSaldo(Double.parseDouble(txtSaldo.getText()));
 			
-			contrConta.criaConta(addDados);
+			ctrConta.criaConta(addDados);
 		}
 	}
 	public void colocarDinheiro() {
@@ -960,6 +995,7 @@ public class Telas implements ActionListener {
 		}
 		else {
 			
+			totalCaixa = saque.recebeNotas();
 			Cedulas tempAdiciona = totalCaixa;
 			
 			tempAdiciona.setN2(tempAdiciona.getN2() + Integer.parseInt(txtR$2.getText()));
@@ -1009,6 +1045,24 @@ public class Telas implements ActionListener {
 				
 				totalCaixa = removeCedula.tratarCedulas(tempRemove);
 			}
+		}
+	}
+	public void realizaDeposito() {
+		
+		if (txtAgencia.getText().isEmpty() || txtConta.getText().isEmpty() || txtValor.getText().isEmpty()) {
+			
+			JOptionPane.showMessageDialog(null, "Os campos DEVEM ser preenchidos");
+		}
+		else {
+			
+			AddDados addDep = new AddDados();
+			
+			addDep.setBanco(cbxBanco.getSelectedItem().toString());
+			addDep.setAgencia(txtAgencia.getText());
+			addDep.setConta(txtConta.getText());
+			addDep.setValor(addDep.getValor() + Double.parseDouble(txtValor.getText()));
+			
+			ctrDeposito.verificaDeposito(addDep);
 		}
 	}
 	public void mostrarDinheiro() {
@@ -1087,7 +1141,7 @@ public class Telas implements ActionListener {
 	}
 	public void verSaldo() {
 	    
-		AddDados adv = new AddDados();
+		AddDados addDep = new AddDados();
 		
 		if (txtCartao.getText().isEmpty()) {
 			
@@ -1095,16 +1149,16 @@ public class Telas implements ActionListener {
 		}
 		else {
 			
-			CtrSaldo ctrsaldo = new CtrSaldo();
-            ctrsaldo.verificaSaldo(adv.getNumCartao());
 		}
 	}
 	class verificaTexto extends DocumentFilter {     // Realiza o limite de caracteres nos JTextField's
 
 		private int limite;
+		private String tipo;
 
-		public verificaTexto(int limite) {
+		public verificaTexto(int limite, String tipo) {
 			
+			this.tipo = tipo;
 			this.limite = limite;
 		}
 
@@ -1121,24 +1175,63 @@ public class Telas implements ActionListener {
 				super.insertString(fb, offset, string, attr);
 			} 
 			else {
-				// warn the user and don't allow the insert
+				
 			}
 		}
 		private boolean test(String text) {
 			
-			try {	
+			if ("Texto".equals(tipo)) {
+
 				if (text.length() <= limite) {
-					
+
 					return true;
 				} 
 				else {
+
 					return false;
 				}
 			} 
-			catch (NumberFormatException e) {
-				
-				return false;
+			else if ("Int".equals(tipo)) {
+
+				if (text.length() <= limite) {
+
+					try {
+
+						Long.parseLong(text);
+
+						return true;
+					} 
+					catch (NumberFormatException e) {
+
+						return false;
+					}
+				} 
+				else {
+
+					return false;
+				}
+			} 
+			else if ("Double".equals(tipo)) {
+
+				if (text.length() <= limite) {
+
+					try {
+
+						Double.parseDouble(text);
+
+						return true;
+					} 
+					catch (NumberFormatException e) {
+
+						return false;
+					}
+				}
+				else {
+
+					return false;
+				}
 			}
+			return false;
 		}
 
 		@Override
@@ -1154,7 +1247,7 @@ public class Telas implements ActionListener {
 				super.replace(fb, offset, length, text, attrs);
 			} 
 			else {
-				// warn the user and don't allow the insert
+				
 			}
 		}
 
@@ -1171,7 +1264,7 @@ public class Telas implements ActionListener {
 				super.remove(fb, offset, length);
 			} 
 			else {
-				// warn the user and don't allow the insert
+				
 			}
 		}
 	}

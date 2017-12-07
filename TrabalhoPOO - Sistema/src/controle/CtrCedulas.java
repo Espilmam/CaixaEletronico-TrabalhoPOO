@@ -11,8 +11,6 @@ public class CtrCedulas {
 	
 	public Cedulas sacarValor(Cedulas sq, AddDados conta) {
 		
-		System.out.println("passei1");
-		
 		return saqueBd.atualizarNotas(sq, conta);	
 	}
 	public Cedulas recebeNotas(){
