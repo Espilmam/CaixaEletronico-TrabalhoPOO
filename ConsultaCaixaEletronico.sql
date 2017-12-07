@@ -8,14 +8,25 @@ nome varchar(100) not null,
 conta varchar(10) not null,
 numCartao varchar(16) not null,
 senha varchar(50) not null,
-saldo DECIMAL (100,2) not null,
+saldo DECIMAL (10,2) not null,
 banco varchar(15) not null,
 agencia varchar(4) not null,
 
-primary key(conta)
+primary key(numCartao)
 )
 
 select * from Conta
+where numCartao = '' and senha = ''
+
+select * from Conta
+where numCartao = '';
+
+select * from Conta
+where banco = '' and agencia = '' and conta = ''
+
+update Conta set
+saldo = ''
+
 
 create table Cedulas (
 
@@ -25,22 +36,11 @@ n10 int,
 n20 int,
 n50 int,
 n100 int,
-
 )
-
 select * from Cedulas
 
-insert into Cedulas(n2, n5, n10, n20, n50, n100) values
-(100, 100, 100, 100, 100, 100)
-
-/*update Cedulas set
- n2 = 50,
- n5 = 11,
- n10 = 24,
- n20 = 34,
- n50 = 24,
- n100 = 44*/
-
+/*insert into Cedulas(n2, n5, n10, n20, n50, n100) values
+(100, 100, 100, 100, 100, 100)*/
 
 update Cedulas set
  n2 = n2 - 1,
