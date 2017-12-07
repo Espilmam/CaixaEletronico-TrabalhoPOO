@@ -5,6 +5,7 @@ import modelo.Saque;
 
 public interface SaqueDAO {
 	
-	Saque retirarNotas(Saque sq, AddValores adv);
+	Saque atualizarNotas(Saque sq, AddValores adv);
 	
+	Saque recebeNotas ();
 }

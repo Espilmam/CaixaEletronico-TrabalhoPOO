@@ -24,7 +24,9 @@ import javax.swing.text.PlainDocument;
 
 import controle.CtrAddValor;
 import controle.CtrSacar;
+import controle.CtrSaldo;
 import modelo.AddValores;
+import modelo.Saldo;
 import modelo.Saque;
 
 public class Telas implements ActionListener {
@@ -89,6 +91,7 @@ public class Telas implements ActionListener {
 	private JTextField txtSaldo;
 	private JTextField txtAgencia;
 	private JTextField txtConta;
+	private JTextField txtLogin;
 	private static Telas tl = new Telas();
 	private CtrAddValor contrConta = new CtrAddValor();
 	private CtrSacar saque = new CtrSacar();
@@ -99,7 +102,6 @@ public class Telas implements ActionListener {
 	public static void main(String[] args) {
 		
 		ta = new JFrame("Acesso");
-		tm = new JFrame("Menu");
 		ts = new JFrame("Saque");
 		tp = new JFrame("Depósito");
 		tt = new JFrame("Transferencia");
@@ -115,14 +117,14 @@ public class Telas implements ActionListener {
 		
 		JPanel painelLogin = new JPanel ();
 		JLabel login = new JLabel("Nº cartão:");
-		JTextField txtLogin = new JTextField(20);
+		txtLogin = new JTextField(20);
 		
 		painelLogin.add(login);
 		painelLogin.add(txtLogin);
 		
 		JPanel painelSenha = new JPanel ();
 		JLabel senha = new JLabel("Senha:");	
-		JPasswordField txtSenha = new JPasswordField(20);
+		txtSenha = new JPasswordField(20);
 		painelSenha.add(senha);
 		painelSenha.add(txtSenha);
 		
@@ -159,6 +161,8 @@ public class Telas implements ActionListener {
 		painelTelaLogin.add(painelDados);
 		painelTelaLogin.add(painelBotoes);
 		painelTelaLogin.add(new JPanel());
+		
+		totalCaixa = saque.recebeNotas();
 		
 		ta.setContentPane(painelTelaLogin);		
 		ta.setVisible(true);
@@ -222,10 +226,8 @@ public class Telas implements ActionListener {
 		painelTelaMenu.add(painelSuperior);
 		painelTelaMenu.add(painelBotoesDireito);
 		
-		tm.setContentPane(painelTelaMenu);		
-		tm.setVisible(true);
-		tm.setSize(600, 400);
-		tm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			
+
 	}
 	public void telaSaque() {
 		
@@ -258,7 +260,7 @@ public class Telas implements ActionListener {
 		
 		JLabel lblSaque = new JLabel ("Valor a ser sacado:");
 		JTextField txtMostraSaque = new JTextField(10);
-		JPanel pnSaque = new JPanel();	
+		JPanel pnSaque = new JPanel();
 		pnSaque.add(lblSaque);
 		pnSaque.add(txtMostraSaque);
 		pnSaque.add(btnZerar);
@@ -481,6 +483,9 @@ public class Telas implements ActionListener {
 		JTextField txtCartao = new JTextField(15);
 		JPanel painelCartao = new JPanel();
 		
+		PlainDocument verCartao = (PlainDocument) txtCartao.getDocument();
+		verCartao.setDocumentFilter(new verificaTexto(16));
+		
 		JLabel lblNome = new JLabel("Nome:");
 		JTextField txtNome = new JTextField(20);
 		txtNome.setEnabled(false);
@@ -702,22 +707,6 @@ public class Telas implements ActionListener {
 		tadd.setSize(600, 400);
 		tadd.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
-	public void vouSacar() {
-		Saque tempSaque = totalCaixa;
-		/* CODIGO PARA SUBTRAIR DO CAIXA (CAIXATEMP)AQUI*/
-		
-		tempSaque.setN2(tempSaque.getN2() - n2);
-		tempSaque.setN5(tempSaque.getN5() - n5);
-		tempSaque.setN10(tempSaque.getN10() - n10);
-		tempSaque.setN20(tempSaque.getN20() - n20);
-		tempSaque.setN50(tempSaque.getN50() - n50);
-		tempSaque.setN100(tempSaque.getN100() - n100);
-		
-		System.out.println("passei3");
-		
-		totalCaixa = saque.sacarValor(tempSaque, usuario);
-		
-	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg) {
@@ -728,8 +717,7 @@ public class Telas implements ActionListener {
 		
 		if ("Acessar".equals(cmd)) {
 			
-			tadm = new JFrame("Acessar");
-			tl.telaMenu();
+			Login();
 		} 
 		else if ("Adicionar Valores...".equals(cmd)) {
 			
@@ -825,6 +813,10 @@ public class Telas implements ActionListener {
 			tsal = new JFrame("Saldo");
 			tl.telaSaldo();
 		}
+		else if ("Verificar".equals(cmd)) {
+			
+			verSaldo();
+		}
 		else if ("VoltarSaldo".equals(cmd)) {
 			
 			tsal.dispose();
@@ -835,8 +827,39 @@ public class Telas implements ActionListener {
 		}
 		else if ("Finalizar".equals(cmd)) {
 			
-			tm.dispose();
+			telaAcesso();
+			painelTelaMenu.setVisible(false);
+			ta.setContentPane(painelTelaLogin);
+			painelTelaLogin.setVisible(true);
 		}	
+	}
+	public void Login() {
+		String senha = new String(txtSenha.getPassword());
+		if (txtLogin.getText().isEmpty() || senha.isEmpty()) {
+			
+			JOptionPane.showMessageDialog(null,"Os campos DEVEM ser preenchidos");
+		}
+		else {			
+			usuario.setNumCartao(txtLogin.getText());
+			usuario.setSenha(senha);
+			
+			boolean ok = contrConta.verificaLogin(usuario);
+			
+			if (ok == false){
+				JOptionPane.showMessageDialog(null, "Conta não existe");
+			} 
+			else {
+				System.out.println("N2" +totalCaixa.getN2() + "n5" + totalCaixa.getN5() + "n50" + totalCaixa.getN50());
+				telaMenu();
+				painelTelaLogin.setVisible(false);
+				ta.setContentPane(painelTelaMenu);	
+				painelTelaMenu.setVisible(true);
+				ta.invalidate();
+				ta.revalidate();
+				ta.repaint();
+			}
+				
+		}
 	}
 	public void ColocarValores() {
 		
@@ -865,9 +888,35 @@ public class Telas implements ActionListener {
 			contrConta.criaConta(adv);
 		}
 	}
-	public void RealizarSaque() {
+	public void vouSacar() {
 		
-		Saque sq = new Saque();
+		Saque tempSaque = totalCaixa;
+		/* CODIGO PARA SUBTRAIR DO CAIXA (CAIXATEMP)AQUI*/
+		
+		tempSaque.setN2(tempSaque.getN2() - n2);
+		tempSaque.setN5(tempSaque.getN5() - n5);
+		tempSaque.setN10(tempSaque.getN10() - n10);
+		tempSaque.setN20(tempSaque.getN20() - n20);
+		tempSaque.setN50(tempSaque.getN50() - n50);
+		tempSaque.setN100(tempSaque.getN100() - n100);
+		
+		System.out.println("passei3");
+		
+		totalCaixa = saque.sacarValor(tempSaque, usuario);
+	}
+	public void verSaldo() {
+	    
+		AddValores adv = new AddValores();
+		
+		if (txtCartao.getText().isEmpty()) {
+			
+			JOptionPane.showMessageDialog(null,"O campo do número do cartão deve ser preenchido");
+		}
+		else {
+			
+			CtrSaldo ctrsaldo = new CtrSaldo();
+            ctrsaldo.verificaSaldo(adv.getNumCartao());
+		}
 	}
 	class verificaTexto extends DocumentFilter {     // Realiza o limite de caracteres nos JTextField's
 

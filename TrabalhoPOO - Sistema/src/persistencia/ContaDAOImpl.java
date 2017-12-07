@@ -2,6 +2,7 @@ package persistencia;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import modelo.AddValores;
@@ -10,12 +11,11 @@ public class ContaDAOImpl implements ContaDAO {
 	
 	@Override
 	public void adiciona(AddValores dados){
-	
-		Connection con = BDConexaoDAOImpl.getInstance().getConnection();
+		
+		Connection con = BDConexaoDAOImpl.getInstance().getConnection();	
 		String sql = "insert into Conta(nome, conta, numCartao, senha, saldo, banco, agencia) values (?,?,?,?,?,?,?)";
 		
-		try {
-			
+		try {			
 			PreparedStatement ps = con.prepareStatement(sql);
 			
 			ps.setString(1, dados.getNome());
@@ -32,4 +32,38 @@ public class ContaDAOImpl implements ContaDAO {
 			
 		}
 	}
+
+	@Override
+	public boolean verificaLogin(AddValores usuario) {
+		usuario.setAgencia(null);
+		usuario.setConta(null);
+		Connection con = BDConexaoDAOImpl.getInstance().getConnection();	
+		String sql = "select * from Conta" 
+		+ " where numCartao = '" + usuario.getNumCartao() + "' and senha = '" + usuario.getSenha() + "'";
+		
+		try {			
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				
+				usuario.setAgencia(rs.getString("agencia"));
+				usuario.setBanco(rs.getString("banco"));
+				usuario.setSaldo(rs.getDouble("saldo"));
+				usuario.setConta(rs.getString("conta"));
+				usuario.setNome(rs.getString("nome"));
+				
+			}
+			if (usuario.getAgencia() == null  || usuario.getConta() == null){
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+		catch (SQLException e) {
+			return false;
+		}
+		
+	}	
 }
