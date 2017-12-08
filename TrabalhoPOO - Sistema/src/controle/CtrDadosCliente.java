@@ -11,9 +11,9 @@ public class CtrDadosCliente {
 		
 		cdao.adiciona(adv);
 	}
-	public AddDados recebeSaldo() {
+	public AddDados recebeSaldo(AddDados usuario) {
 		
-		return cdao.recebeSaldo();
+		return cdao.recebeSaldo(usuario);
 	}
 	public boolean verificaLogin(AddDados usuario) {
 		
@@ -22,5 +22,9 @@ public class CtrDadosCliente {
 	public boolean verificaDeposito(AddDados usuario) {
 		
 		return cdao.verificaDeposito(usuario);
+	}
+	public void descontaSaldo(AddDados usuario) {
+		
+		cdao.descontarSaldo(usuario);
 	}
 }

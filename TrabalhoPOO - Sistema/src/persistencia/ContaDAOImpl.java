@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
 import modelo.AddDados;
-import visao.Telas;
 
 public class ContaDAOImpl implements ContaDAO {
 	
@@ -71,12 +72,10 @@ public class ContaDAOImpl implements ContaDAO {
 	}
 	
 	@Override
-	public AddDados recebeSaldo() {
-
-		AddDados saldo = new AddDados();
+	public AddDados recebeSaldo(AddDados saldo) {
 		
 		Connection con = BDConexaoDAOImpl.getInstance().getConnection();	
-		String sql = "select * from Conta" + "where numCartao = '" + saldo.getNumCartao() + "'";
+		String sql = "select saldo from Conta " + "where numCartao = '" + saldo.getNumCartao() + "'";
 		
 		try {
 			PreparedStatement ps = con.prepareStatement(sql);
@@ -95,9 +94,9 @@ public class ContaDAOImpl implements ContaDAO {
 	
 	@Override
 	public boolean verificaDeposito(AddDados usuario) {
-		System.out.println("passei");
+		
 		Connection con = BDConexaoDAOImpl.getInstance().getConnection();	
-		String sql1 = "select * from Conta" + "where banco = '" + usuario.getBanco() 
+		String sql1 = "select * from Conta " + "where banco = '" + usuario.getBanco() 
 					+ "' and agencia = '" + usuario.getAgencia()
 					+ "' and conta = '" + usuario.getConta() + "'";
 		
@@ -107,25 +106,28 @@ public class ContaDAOImpl implements ContaDAO {
 			
 			while(rs.next()) {
 				
-				usuario.setAgencia(rs.getString("agencia"));
-				usuario.setBanco(rs.getString("banco"));
-				usuario.setConta(rs.getString("conta"));					
+				usuario.setNumCartao(rs.getString("numCartao"));
+				
 			}
-			if (usuario.getAgencia() == null || usuario.getBanco() == null || usuario.getConta() == null) {
-				System.out.println("passei");
-				return true;
+			if (usuario.getNumCartao() == null) {
+				
+				JOptionPane.showMessageDialog(null, "Dados procurados não existem");
+				
+				return false;
 			}
 			else {
 				
-				String sql2 = "update Conta set " + "saldo = '" + (usuario.getValor()) + "'";
-				
+				String sql2 = "update Conta set " + "saldo = saldo + " + usuario.getValor()
+				+ " where numCartao = '"  + usuario.getNumCartao() + "' "; 
+				System.out.println("passei3");
 				try {
 					PreparedStatement ps2 = con.prepareStatement(sql2);
-					System.out.println("adicionei");
+				
 					ps2.execute();
 				} 
-				catch (Exception e) {
+				catch (SQLException e) {
 					
+					JOptionPane.showMessageDialog(null, "Dados não encontrados");
 				}
 				return true;
 			}
@@ -134,6 +136,22 @@ public class ContaDAOImpl implements ContaDAO {
 
 		}
 		return false;
+	}
+	@Override
+	public void descontarSaldo(AddDados adv) {
+		
+		Connection con = BDConexaoDAOImpl.getInstance().getConnection();
+		String sql = "update Conta set " + "saldo = " + adv.getSaldo()
+                       + " where numCartao = '"  + adv.getNumCartao() + "' "; 
+		
+		try {
+			PreparedStatement ps = con.prepareStatement(sql);
+			
+			ps.executeUpdate();
+		} 
+		catch (SQLException e) {
+			
+		}
 	}
 }
 

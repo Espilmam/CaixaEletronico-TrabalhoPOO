@@ -25,21 +25,17 @@ import javax.swing.text.PlainDocument;
 import controle.CtrDadosCliente;
 import controle.CtrCedulas;
 import modelo.AddDados;
-import modelo.Saldo;
 import modelo.Cedulas;
 
 public class Telas implements ActionListener {
 	
 	private static JFrame ta;
-	private static JFrame tm;
 	private static JFrame ts;
 	private static JFrame tp;
-	private static JFrame tt;
+	private static JFrame tpag;
 	private static JFrame tadm;
 	private static JFrame tadd;
 	private static JFrame tsal;
-	private ButtonGroup tipoTransf;
-	private ButtonGroup tipoDado;
 	private ButtonGroup tipoConta;
 	private ButtonGroup tipoPagar;
 	private JButton btnAcessar;
@@ -64,17 +60,17 @@ public class Telas implements ActionListener {
 	private int r$100 = 0;
 	private JButton btnZerar;
 	private JButton btnVoltar;
-	private JButton btnTransferir;
+	private JButton btnPagar;
 	private JButton btnAdicionar;
-	private JButton btnVerificar;
 	private JButton btnMostrar;
 	private JButton btnRemover;
+	private JButton btnAtualizar;
 	private JComboBox<String> cbxBanco;
 	private JPanel painelTelaLogin;
 	private JPanel painelTelaMenu;
 	private JPanel painelTelaSaque;
 	private JPanel painelTelaDep;
-	private JPanel painelTelaTransf;
+	private JPanel painelTelaPag;
 	private JPanel painelTelaAdd;
 	private JPanel painelTelaADM;
 	private JPanel painelTelaSaldo;
@@ -83,10 +79,6 @@ public class Telas implements ActionListener {
 	private JRadioButton chkPoupanca;
 	private JRadioButton chkCheque;
 	private JRadioButton chkMoney;
-	private JRadioButton chkDOC;
-	private JRadioButton chkTED;
-	private JRadioButton chkCPF;
-	private JRadioButton chkCNPJ;
 	private JTextField txtCartao;
 	private JTextField txtNome;
 	private JTextField txtSaldo;
@@ -100,7 +92,9 @@ public class Telas implements ActionListener {
 	private JTextField txtR$10; 
 	private JTextField txtR$20; 
 	private JTextField txtR$50; 
-	private JTextField txtR$100; 
+	private JTextField txtR$100;
+	private JTextField txtTotal;
+	private JTextField txtPagConta;
 	private static Telas tl = new Telas();
 	private CtrDadosCliente ctrConta = new CtrDadosCliente();
 	private CtrDadosCliente ctrDeposito = new CtrDadosCliente();
@@ -118,7 +112,7 @@ public class Telas implements ActionListener {
 		ta = new JFrame("Acesso");
 		ts = new JFrame("Saque");
 		tp = new JFrame("Depósito");
-		tt = new JFrame("Transferencia");
+		tpag = new JFrame("Pagamento");
 		tadm = new JFrame("Administrador");
 		tadd = new JFrame("Adiciona Valores");
 		tl.telaAcesso();
@@ -179,7 +173,8 @@ public class Telas implements ActionListener {
 		painelTelaLogin.add(painelBotoes);
 		painelTelaLogin.add(new JPanel());
 		
-		usuario = ctrDeposito.recebeSaldo();
+		totalCaixa = saque.recebeNotas();
+		
 		//ta.setUndecorated(true);
 		//ta.setLocationRelativeTo(null);
 		ta.setContentPane(painelTelaLogin);		
@@ -198,7 +193,7 @@ public class Telas implements ActionListener {
 		
 		btnSaque = new JButton("Realizar Saque");
 		btnDeposito = new JButton("Realizar Depósito");
-		btnTransf = new JButton("Realizar Transferencia");
+		btnTransf = new JButton("Realizar Pagamento");
 		btnSaldo = new JButton("Ver Saldo");
 		btnSair = new JButton("Finalizar");
 		btnSaque.addActionListener(this);
@@ -411,99 +406,46 @@ public class Telas implements ActionListener {
 		tp.setSize(600, 300);
 		tp.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
-	public void telaTransferencia() {
+	public void telaPagamento() {
 		
-		painelTelaTransf = new JPanel(new BorderLayout());
-		JPanel painelEsquerdo = new JPanel(new GridLayout(10,1));
-		JPanel painelBaixo = new JPanel();
-		JLabel lblTrasnf = new JLabel("Tipo de transferencia");
-		chkDOC = new JRadioButton("DOC");
-		chkTED = new JRadioButton("TED");
-		tipoTransf = new ButtonGroup();
-	    tipoTransf.add(chkDOC);
-	    tipoTransf.add(chkTED);
-		JPanel painelTransf = new JPanel();
-		
-		JLabel lblDest = new JLabel("Dados destinatário");
-		chkCPF = new JRadioButton("CPF");
-		chkCNPJ = new JRadioButton("CNPJ");
-		tipoDado = new ButtonGroup();
-		tipoDado.add(chkCPF);
-		tipoDado.add(chkCNPJ);
-	    JPanel painelDest = new JPanel();
-	    
-	    JTextField txtCPFCNPJ = new JTextField(15);
-	    PlainDocument verCPFCNPJ = (PlainDocument) txtCPFCNPJ.getDocument();    // <----- VERIFICAR 
-		verCPFCNPJ.setDocumentFilter(new verificaTexto(11, "Int"));
-	    JPanel painelCPFCNPJ = new JPanel();
-	    painelCPFCNPJ.add(txtCPFCNPJ);
-	    
-		JLabel lblAgencia = new JLabel("Agência: ");
-		txtAgencia = new JTextField(5);	
-		PlainDocument verAgencia = (PlainDocument) txtAgencia.getDocument();
-		verAgencia.setDocumentFilter(new verificaTexto(4, "Int"));
-		JPanel painelAgencia = new JPanel();
-		
-		JLabel lblConta = new JLabel("Conta: ");
-		txtConta = new JTextField(10);
-		PlainDocument verConta = (PlainDocument) txtConta.getDocument();
-		verConta.setDocumentFilter(new verificaTexto(10, "Int"));
-		JPanel painelConta = new JPanel();	
-		
-		JLabel lblBanco = new JLabel("Banco");
-		cbxBanco = new JComboBox<String>();
-		cbxBanco.addItem("Itaú");
-		cbxBanco.addItem("Santander");
-		cbxBanco.addItem("Banco do Brasil");
-		cbxBanco.addItem("Bradesco");
-		cbxBanco.addItem("Caixa Econômica");
-		cbxBanco.addItem("HSBC");
-		cbxBanco.addItem("Banco Original");
-		JPanel painelBanco = new JPanel();
-			
-		JLabel lblValor = new JLabel("Valor: ");
-		txtValor = new JTextField(15);	
-		PlainDocument verValor = (PlainDocument) txtValor.getDocument();
-		verValor.setDocumentFilter(new verificaTexto(15,"Double"));
-		JPanel painelValor = new JPanel();
+		painelTelaPag = new JPanel(new BorderLayout());
+		JPanel painelMostrar = new JPanel(new GridLayout(7,1));
+		JPanel painelBotoes = new JPanel();
 		
 		btnVoltar = new JButton("Voltar");
 		btnVoltar.addActionListener(this);
-		btnVoltar.setActionCommand("VoltarTransf");
-		btnTransferir = new JButton("Tranferir");
-		btnTransferir.addActionListener(this);
+		btnVoltar.setActionCommand("VoltarPagamento");
+		btnPagar = new JButton("Pagar");
+		btnPagar.addActionListener(this);
 		
-		painelTransf.add(lblTrasnf);
-		painelTransf.add(chkDOC);
-		painelTransf.add(chkTED);;
-		painelDest.add(lblDest);
-		painelDest.add(chkCPF);
-		painelDest.add(chkCNPJ);
-		painelDest.add(painelCPFCNPJ);
-		painelAgencia.add(lblAgencia);
-		painelAgencia.add(txtAgencia);
-		painelConta.add(lblConta);
-		painelConta.add(txtConta);
-		painelBanco.add(lblBanco);
-		painelBanco.add(cbxBanco);
+		JLabel lblCod = new JLabel("Código da conta");
+		txtPagConta = new JTextField(20);
+		PlainDocument verPagConta = (PlainDocument) txtPagConta.getDocument();
+		verPagConta.setDocumentFilter(new verificaTexto(20,"Int"));
+		JPanel painelPagConta = new JPanel();
+		
+		JLabel lblValor = new JLabel("Valor da conta");
+		txtValor = new JTextField(10);
+		PlainDocument verValor = (PlainDocument) txtValor.getDocument();
+		verValor.setDocumentFilter(new verificaTexto(10,"Double"));
+		JPanel painelValor = new JPanel();
+		
+		painelPagConta.add(lblCod);
+		painelPagConta.add(txtPagConta);
 		painelValor.add(lblValor);
 		painelValor.add(txtValor);
-		painelEsquerdo.add(painelTransf);
-		painelEsquerdo.add(painelDest);
-		painelEsquerdo.add(painelAgencia);
-		painelEsquerdo.add(painelConta);
-		painelEsquerdo.add(painelBanco);
-		painelEsquerdo.add(painelValor);
-		painelBaixo.add(btnTransferir);
-		painelBaixo.add(btnVoltar);
+		painelMostrar.add(painelPagConta);
+		painelMostrar.add(painelValor);
+		painelBotoes.add(btnPagar);
+		painelBotoes.add(btnVoltar);
 		
-		painelTelaTransf.add(painelEsquerdo, BorderLayout.CENTER);
-		painelTelaTransf.add(painelBaixo, BorderLayout.SOUTH);
+		painelTelaPag.add(painelMostrar, BorderLayout.CENTER);
+		painelTelaPag.add(painelBotoes, BorderLayout.SOUTH);
 		
-		tt.setContentPane(painelTelaTransf);
-		tt.setVisible(true);
-		tt.setSize(800, 600);
-		tt.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		tpag.setContentPane(painelTelaPag);
+		tpag.setVisible(true);
+		tpag.setSize(600, 400);
+		tpag.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 	public void telaSaldo() {
 		
@@ -511,49 +453,24 @@ public class Telas implements ActionListener {
 		JPanel painelMostrar = new JPanel(new GridLayout(7,1));
 		JPanel painelBotoes = new JPanel();
 		
-		btnVerificar = new JButton("Verificar");
-		btnVerificar.addActionListener(this);
+		JLabel lblSaldo = new JLabel("Saldo");
+		txtSaldo = new JTextField(10);
+		txtSaldo.setText(Double.toString(usuario.getSaldo()));
+		txtSaldo.setEnabled(false);
+		JPanel painelSaldo = new JPanel();
+		
 		btnVoltar = new JButton("Voltar");
 		btnVoltar.addActionListener(this);
 		btnVoltar.setActionCommand("VoltarSaldo");
+		btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.addActionListener(this);
+			
+		painelSaldo.add(lblSaldo);
+		painelSaldo.add(txtSaldo);
 		
-		JLabel lblCartao = new JLabel("Numero do Cartão:");
-		JTextField txtCartao = new JTextField(16);
-		PlainDocument verCartao = (PlainDocument) txtCartao.getDocument();
-		verCartao.setDocumentFilter(new verificaTexto(16, "Int"));
-		JPanel painelCartao = new JPanel();
-		
-		JLabel lblNome = new JLabel("Nome:");
-		JTextField txtNome = new JTextField(20);
-		txtNome.setEnabled(false);
-		JPanel painelNome = new JPanel();
-		
-		JLabel lblBanco = new JLabel("Banco:");
-		JTextField txtBanco = new JTextField(10);
-		txtBanco.setEnabled(false);
-		JPanel painelBanco = new JPanel();
-		
-		JLabel lblConta = new JLabel("Conta");
-		JTextField txtConta = new JTextField(10);
-		txtConta.setEnabled(false);
-		JPanel painelConta = new JPanel();
-		
-		painelCartao.add(lblCartao);
-		painelCartao.add(txtCartao);
-		painelCartao.add(btnVerificar);
-		painelNome.add(lblNome);
-		painelNome.add(txtNome);
-		painelBanco.add(lblBanco);
-		painelBanco.add(txtBanco);
-		painelConta.add(lblConta);
-		painelConta.add(txtConta);
-		
-		painelMostrar.add(painelCartao);
-		painelMostrar.add(painelNome);
-		painelMostrar.add(painelBanco);
-		painelMostrar.add(painelConta);
-		
-		painelBotoes.add(btnVoltar);
+		painelMostrar.add(painelSaldo);	
+		painelBotoes.add(btnAtualizar);
+		painelBotoes.add(btnVoltar);	
 		
 		painelTelaSaldo.add(painelMostrar, BorderLayout.CENTER);
 		painelTelaSaldo.add(painelBotoes, BorderLayout.SOUTH);
@@ -642,7 +559,7 @@ public class Telas implements ActionListener {
 		painelR$100.add(txtR$100);
 		
 		JLabel lblTotal = new JLabel("Total no caixa");
-		JTextField txtTotal = new JTextField(15);
+		txtTotal = new JTextField(15);
 		JPanel painelTotal = new JPanel();
 		txtTotal.setEnabled(false);
 		painelTotal.add(lblTotal);
@@ -815,7 +732,7 @@ public class Telas implements ActionListener {
 		}
 		else if ("MostrarCedula".equals(cmd)) {
 			
-			mostrarDinheiro();
+			mostrarDinheiro();		
 		}
 		else if ("ZerarCedula".equals(cmd)) {
 			
@@ -897,27 +814,31 @@ public class Telas implements ActionListener {
 			
 			tp.dispose();
 		}
-		else if ("Realizar Transferencia".equals(cmd)) {
+		else if ("Realizar Pagamento".equals(cmd)) {
 			
-			tt = new JFrame("Transferencia");
-			tl.telaTransferencia();
+			tpag = new JFrame("Pagamento");
+			tl.telaPagamento();
 		}
 		else if ("Ver Saldo".equals(cmd)) {
 			
 			tsal = new JFrame("Saldo");
 			tl.telaSaldo();
 		}
-		else if ("Verificar".equals(cmd)) {
+		else if ("Atualizar".equals(cmd)) {
 			
-			verSaldo();
+			atualizaSaldo();
 		}
 		else if ("VoltarSaldo".equals(cmd)) {
 			
 			tsal.dispose();
 		}
-		else if ("VoltarTransf".equals(cmd)) {
+		else if ("Pagar".equals(cmd)) {
 			
-			tt.dispose();
+			realizaPagamento();
+		}
+		else if ("VoltarPagamento".equals(cmd)) {
+			
+			tpag.dispose();
 		}
 		else if ("Finalizar".equals(cmd)) {
 			
@@ -995,7 +916,6 @@ public class Telas implements ActionListener {
 		}
 		else {
 			
-			totalCaixa = saque.recebeNotas();
 			Cedulas tempAdiciona = totalCaixa;
 			
 			tempAdiciona.setN2(tempAdiciona.getN2() + Integer.parseInt(txtR$2.getText()));
@@ -1060,7 +980,7 @@ public class Telas implements ActionListener {
 			addDep.setBanco(cbxBanco.getSelectedItem().toString());
 			addDep.setAgencia(txtAgencia.getText());
 			addDep.setConta(txtConta.getText());
-			addDep.setValor(addDep.getValor() + Double.parseDouble(txtValor.getText()));
+			addDep.setValor(Double.parseDouble(txtValor.getText()));
 			
 			ctrDeposito.verificaDeposito(addDep);
 		}
@@ -1075,14 +995,16 @@ public class Telas implements ActionListener {
 		tempMostra.setN20(tempMostra.getN20());
 		tempMostra.setN50(tempMostra.getN50());
 		tempMostra.setN100(tempMostra.getN100());
-		
 			
 		txtR$2.setText(Integer.toString(tempMostra.getN2()));
 		txtR$5.setText(Integer.toString(tempMostra.getN5()));
 		txtR$10.setText(Integer.toString(tempMostra.getN10()));
 		txtR$20.setText(Integer.toString(tempMostra.getN20()));
 		txtR$50.setText(Integer.toString(tempMostra.getN50()));
-		txtR$100.setText(Integer.toString(tempMostra.getN100()));		
+		txtR$100.setText(Integer.toString(tempMostra.getN100()));
+		
+		txtTotal.setText(Integer.toString((10 * totalCaixa.getN10()) + (5 * totalCaixa.getN5())
+                + (2 * totalCaixa.getN2()) + (20 * totalCaixa.getN20()) + (50 * totalCaixa.getN50()) + (100 * totalCaixa.getN100())));
 	}
 	public void zerarDinheiro() {
 		
@@ -1101,17 +1023,30 @@ public class Telas implements ActionListener {
 		
 		Cedulas tempSaque = totalCaixa;
 		
-		tempSaque.setN2(tempSaque.getN2() - r$2);
-		tempSaque.setN5(tempSaque.getN5() - r$5);
-		tempSaque.setN10(tempSaque.getN10() - r$10);
-		tempSaque.setN20(tempSaque.getN20() - r$20);
-		tempSaque.setN50(tempSaque.getN50() - r$50);
-		tempSaque.setN100(tempSaque.getN100() - r$100);
+		tempSaque.setN2(tempSaque.getN2());
+		tempSaque.setN5(tempSaque.getN5());
+		tempSaque.setN10(tempSaque.getN10());
+		tempSaque.setN20(tempSaque.getN20());
+		tempSaque.setN50(tempSaque.getN50());
+		tempSaque.setN100(tempSaque.getN100());
 		
-		//usuario.modificaSaldo(totalSaque(aux));
-		
-		totalCaixa = saque.sacarValor(tempSaque, usuario);
-		zerarCedulasTemp();
+		if (tempSaque.getN2() - r$2 < 0 || tempSaque.getN5() - r$5 < 0 || tempSaque.getN10() - r$10 < 0 
+			|| tempSaque.getN20() - r$20 < 0 || tempSaque.getN50() - r$50 < 0 || tempSaque.getN100() - r$100 < 0) {
+			
+			JOptionPane.showMessageDialog(null, "Valor desejado de cédulas é maior que valor disponivel no caixa");
+		}
+		else {
+			
+			tempSaque.setN2(tempSaque.getN2() - r$2);
+			tempSaque.setN5(tempSaque.getN5() - r$5);
+			tempSaque.setN10(tempSaque.getN10() - r$10);
+			tempSaque.setN20(tempSaque.getN20() - r$20);
+			tempSaque.setN50(tempSaque.getN50() - r$50);
+			tempSaque.setN100(tempSaque.getN100() - r$100);
+			usuario.setSaldo(usuario.getSaldo() - aux);
+			
+			totalCaixa = saque.sacarValor(tempSaque, usuario);
+		}
 	}
 	public void totalSaque(int valor) {
 			
@@ -1119,12 +1054,13 @@ public class Telas implements ActionListener {
 		
 		if (aux > usuario.getSaldo()) {
 			
-			JOptionPane.showMessageDialog(null, "O valor desejado é maior que seu saldo. Operação cancelada");
+			JOptionPane.showMessageDialog(null, "O valor desejado é maior que seu saldo. Operação cancelada");	 
 			zerarCedulasTemp();
+			
 		}
 		else {
 			
-			txtMostraSaque.setText(Integer.toString(aux));	
+			txtMostraSaque.setText(Integer.toString(aux));	  		
 		}
 	}
 	public void zerarCedulasTemp() {
@@ -1139,17 +1075,29 @@ public class Telas implements ActionListener {
 		aux = 0;
 		txtMostraSaque.setText(Integer.toString(aux));
 	}
-	public void verSaldo() {
-	    
-		AddDados addDep = new AddDados();
+	public void realizaPagamento() {
 		
-		if (txtCartao.getText().isEmpty()) {
+		if (txtPagConta.getText().isEmpty() || txtValor.getText().isEmpty() || Integer.parseInt(txtPagConta.getText()) < 0
+			|| Integer.parseInt(txtValor.getText()) < 0) {
 			
-			JOptionPane.showMessageDialog(null,"O campo do número do cartão deve ser preenchido");
+			JOptionPane.showMessageDialog(null, "Os campos devem ser preenchidos com valores válidos");
 		}
 		else {
 			
+			if (usuario.getSaldo() - Integer.parseInt(txtValor.getText()) < 0) {
+				
+				JOptionPane.showMessageDialog(null, "Seu saldo é insuficiente para pagar essa conta");
+			}
+			else {
+				usuario.setSaldo(usuario.getSaldo() - Integer.parseInt(txtValor.getText()));
+				ctrConta.descontaSaldo(usuario);
+			}
 		}
+	}
+	public void atualizaSaldo() {
+		
+	    usuario = ctrConta.recebeSaldo(usuario);
+		txtSaldo.setText(Double.toString(usuario.getSaldo()));
 	}
 	class verificaTexto extends DocumentFilter {     // Realiza o limite de caracteres nos JTextField's
 
