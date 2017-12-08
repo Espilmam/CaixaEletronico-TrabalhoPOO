@@ -38,7 +38,7 @@ public class CedulasDAOImpl implements CedulasDAO{
 			
 			ps2.executeUpdate();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		return sq;
 	}
@@ -66,7 +66,7 @@ public class CedulasDAOImpl implements CedulasDAO{
 			}
 		} 
 		catch (SQLException e) {
-			
+			e.printStackTrace();
 		}	
 		return caixa;
 	}
@@ -86,7 +86,7 @@ public class CedulasDAOImpl implements CedulasDAO{
 			ps.execute();
 		} 
 		catch (SQLException e) {
-			
+			e.printStackTrace();
 		}
 		return cd;
 	}

@@ -645,9 +645,9 @@ public class Telas implements ActionListener {
 		JPanel painelBanco = new JPanel();
 		
 		JLabel lblAgencia = new JLabel("Agencia");
-		txtAgencia = new JTextField(5);
+		txtAgencia = new JTextField(4);
 		PlainDocument verAgencia = (PlainDocument) txtAgencia.getDocument();
-		verAgencia.setDocumentFilter(new verificaTexto(5, "Int"));
+		verAgencia.setDocumentFilter(new verificaTexto(4, "Int"));
 		JPanel painelAgencia = new JPanel();
 		
 		JLabel lblConta = new JLabel("Conta");
@@ -890,10 +890,9 @@ public class Telas implements ActionListener {
 		}
 		else if (Double.parseDouble(txtSaldo.getText()) <= 0) {
 			
-			JOptionPane.showMessageDialog(null,"Todos os campos DEVEM ser preenchidos");
+			JOptionPane.showMessageDialog(null,"Valor deve ser maior que 0");
 		}
 		else {
-			
 			addDados.setSenha(senha);
 			addDados.setBanco(cbxBanco.getSelectedItem().toString());
 			addDados.setAgencia(txtAgencia.getText());

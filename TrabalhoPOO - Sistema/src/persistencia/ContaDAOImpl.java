@@ -13,7 +13,6 @@ public class ContaDAOImpl implements ContaDAO {
 	
 	@Override
 	public void adiciona(AddDados dados){
-		
 		Connection con = BDConexaoDAOImpl.getInstance().getConnection();	
 		String sql = "insert into Conta(nome, conta, numCartao, senha, saldo, banco, agencia) values (?,?,?,?,?,?,?)";
 		
@@ -32,7 +31,16 @@ public class ContaDAOImpl implements ContaDAO {
 		} 
 		catch (SQLException e) {
 			
+			if (e.toString().contains("Violation of PRIMARY KEY")) {
+				
+				JOptionPane.showMessageDialog(null, "A conta ja esta cadastrada. Operação cancelada");
+				return;
+			}
+			else {
+				e.printStackTrace();
+			}		
 		}
+		JOptionPane.showMessageDialog(null, "Dados cadastrados com sucesso");		
 	}
 	@Override
 	public boolean verificaLogin(AddDados usuario) {
@@ -66,7 +74,7 @@ public class ContaDAOImpl implements ContaDAO {
 			}
 		}
 		catch (SQLException e) {
-			
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -87,7 +95,7 @@ public class ContaDAOImpl implements ContaDAO {
 			}		
 		} 
 		catch (SQLException e) {
-			
+			e.printStackTrace();
 		}	
 		return saldo;
 	}
@@ -119,7 +127,7 @@ public class ContaDAOImpl implements ContaDAO {
 				
 				String sql2 = "update Conta set " + "saldo = saldo + " + usuario.getValor()
 				+ " where numCartao = '"  + usuario.getNumCartao() + "' "; 
-				System.out.println("passei3");
+				
 				try {
 					PreparedStatement ps2 = con.prepareStatement(sql2);
 				
@@ -133,7 +141,7 @@ public class ContaDAOImpl implements ContaDAO {
 			}
 		} 
 		catch (SQLException e) {
-
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -150,7 +158,7 @@ public class ContaDAOImpl implements ContaDAO {
 			ps.executeUpdate();
 		} 
 		catch (SQLException e) {
-			
+			e.printStackTrace();
 		}
 	}
 }
