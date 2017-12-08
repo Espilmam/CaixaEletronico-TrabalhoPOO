@@ -1,8 +1,8 @@
 Sistema de um caixa eletrônico
 
 Antes das informações gerais, primeiramente as informações críticas:
- - Não é necessario instalar o SQL Server, visto que o banco de dados esta hospedado nos servidos do Microsoft Azure
-   - Outras pessoas vão acessra esse banco de dados, logo não coloque dados que sejam vitais para você
+ - O sistema conecta com um banco de dados(SQL), mas não é necessario instalar o SQL Server, visto que o banco de dados esta hospedado nos     servidos do Microsoft Azure
+   - Outras pessoas vão acessar esse banco de dados, logo não coloque dados que sejam vitais para você
      
  - O sistema foi programado no JAVA 8/JRE 1.8.0 na IDE Eclipse
  
