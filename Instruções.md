@@ -1,11 +1,11 @@
 Sistema de um caixa eletrônico
 
 Antes das informações gerais, primeiramente as informações críticas:
- - O sistema conecta com um banco de dados SQL, mas não é necessario instalar o SQL Server/SQL Server Management Studio, visto que ele        esta hospedado nos servidos do Microsoft Azure. Logo, basta apenas adicionar os dados no código do java.
+  - O sistema conecta com um banco de dados SQL, mas não é necessario instalar o SQL Server/SQL Server Management Studio, visto que ele        esta hospedado nos servidos do Microsoft Azure. Logo, basta apenas adicionar os dados no código do java.
  
-   - Outras pessoas vão acessar esse banco de dados, logo não coloque dados que sejam vitais para você
+  - Outras pessoas vão acessar esse banco de dados, logo não coloque dados que sejam vitais para você
    
-   - O código do SQL estará no GitGud tambem. Caso queira testar o banco de dados: 
+  - O código do SQL estará no GitGud tambem. Caso queira testar o banco de dados: 
     - Instale o SQL Server Management Studio 2017 (deve ser o 2017 por causa do M$ Azure)
     - Na tela de login, em Tipo de servidor, deixe selecionado "Mecanismo de banco de dados"
     - Em "Nome do servidor", coloque "trabalhopoo-conta.database.windows.net"
