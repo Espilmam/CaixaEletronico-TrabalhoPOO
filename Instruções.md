@@ -3,7 +3,7 @@ Sistema de um caixa eletrônico
 Antes das informações gerais, primeiramente as informações críticas:
  - O sistema conecta com um banco de dados SQL, mas não é necessario instalar o SQL Server, visto que ele esta hospedado nos servidos do      Microsoft Azure. Logo, basta apenas adicionar os dados código do java.
    - Outras pessoas vão acessar esse banco de dados, logo não coloque dados que sejam vitais para você
-   - Enviarei o código do SQL 
+   - O código do SQL estará no GitGud tambem
      
  - O sistema foi programado no JAVA 8/JRE 1.8.0 na IDE Eclipse
  
