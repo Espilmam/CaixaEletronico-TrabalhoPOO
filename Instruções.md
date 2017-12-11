@@ -44,3 +44,4 @@ Antes das informações gerais, primeiramente as informações críticas:
  OBSERVAÇÕES: 
  
  - Caso adicione um número de cartão, mas ele ja esteja cadastrado, provavelmente alguem ja utilizou esse valor, visto que o BD estará      em um servidor com múltiplos acessos.
+ - Caso tenha testado o código no SQL Management Studio, lembre-se: CUIDADO PARA NÃO FAZER NENHUMA CAQUINHA. SE DER UM DROP TABLE, ELE      VAI APAGAR A TABELA NO M$ AZURE TAMBEM. Irei olhar o servidor e o BD com certa frequencia, para que não ocorra problemas.
