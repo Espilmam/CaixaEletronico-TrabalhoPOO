@@ -9,6 +9,8 @@ Antes das informações gerais, primeiramente as informações críticas:
  
  - É necessário conexão com a internet.
  
+ - Importe a pasta do código no eclipse para funcionar
+ 
  Informações gerais: 
  
  - Ao utilizar pela primeira vez, clique em "Adicionar Valores". Esses dados serão importantes para futuras operações.
@@ -28,5 +30,7 @@ Antes das informações gerais, primeiramente as informações críticas:
  
    - Operações como adicionar notas, remover quantidades, zerar tudo do BD e mostrar as quantidades de notas vão estar disponiveis
    
- OBS: - caso adicione um número de cartão, mas ele ja esteja cadastrado, provavelmente alguem ja utilizou esse valor, visto que o BD estará em um servidor com múltiplos acessos.
- - importe a pasta do código no eclipse para funcionar
+ OBSERVAÇÕES: 
+ 
+ - Caso adicione um número de cartão, mas ele ja esteja cadastrado, provavelmente alguem ja utilizou esse valor, visto que o BD estará em um servidor com múltiplos acessos.
+ 
