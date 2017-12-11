@@ -15,6 +15,8 @@ Antes das informações gerais, primeiramente as informações críticas:
  
  - Lembre sempre do número da conta e da senha para acessar.
  
+ - Para apagar/alterar algum campo, selecione ele inteiro e digite o valor que deseja alterar
+ 
 - No menu, à operações de:
    
    - Realizar o saque de notas, de acordo com o limite do seu saldo bancário e do caixa
@@ -26,5 +28,5 @@ Antes das informações gerais, primeiramente as informações críticas:
  
    - Operações como adicionar notas, remover quantidades, zerar tudo do BD e mostrar as quantidades de notas vão estar disponiveis
    
- OBS: caso adicione um número de cartão, mas ele ja esteja cadastrado, provavelmente alguem ja utilizou esse valor, visto que o BD estará
- em um servidor com múltiplos acessos.
+ OBS: - caso adicione um número de cartão, mas ele ja esteja cadastrado, provavelmente alguem ja utilizou esse valor, visto que o BD estará em um servidor com múltiplos acessos.
+ - importe a pasta do código no eclipse para funcionar
