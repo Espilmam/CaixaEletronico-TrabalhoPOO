@@ -34,7 +34,7 @@ Antes das informações gerais, primeiramente as informações críticas:
 - No menu, à operações de:
    
    - Realizar o saque de notas, de acordo com o limite do seu saldo bancário e do caixa
-   - Possibilidade de realizar depósitos para valores ja cadastrados
+   - Possibilidade de realizar depósitos para dados ja cadastrados
    - Possibilidade de realizar pagamentos, sendo que o código do pagamento é apenas ilustrativo.
    - Ver seu saldo disponível.
  
