@@ -2,9 +2,20 @@ Sistema de um caixa eletrônico
 
 Antes das informações gerais, primeiramente as informações críticas:
  - O sistema conecta com um banco de dados SQL, mas não é necessario instalar o SQL Server/SQL Server Management Studio, visto que ele        esta hospedado nos servidos do Microsoft Azure. Logo, basta apenas adicionar os dados no código do java.
+ 
    - Outras pessoas vão acessar esse banco de dados, logo não coloque dados que sejam vitais para você
-   - O código do SQL estará no GitGud tambem
-     
+   
+   - O código do SQL estará no GitGud tambem. Caso queira testar o banco de dados: 
+    - Instale o SQL Server Management Studio 2017 (deve ser o 2017 por causa do M$ Azure)
+    - Na tela de login, em Tipo de servidor, deixe selecionado "Mecanismo de banco de dados"
+    - Em "Nome do servidor", coloque "trabalhopoo-conta.database.windows.net"
+    - Em "Autenticação", selecione "Autenticação do SQL Server"
+    - Em "Logon", coloque "UserADM"
+    - E na senha, coloque "Trabalhopoo123"
+    - Para abrir o arquivo .sql que deixei aqui, clique ctrl + O e procure ele no seu pc
+    - Do lado do botão "Executar", haverá um ComboBox, nomeado primeiramente de "master". Clique nele e selecione "BDConta"
+    - Para verificar se os dados foram adicionados/alterados/excluidos, selecione "select * from (tabela)" e aperte f5 ou "Executar" 
+    
  - O sistema foi programado no JAVA 8/JRE 1.8.0 na IDE Eclipse
  
  - É necessário conexão com a internet.
@@ -15,9 +26,9 @@ Antes das informações gerais, primeiramente as informações críticas:
  
  - Ao utilizar pela primeira vez, clique em "Adicionar Valores". Esses dados serão importantes para futuras operações.
  
- - Lembre sempre do número da conta e da senha para acessar.
+ - Lembre sempre do número do cartão e da senha para acessar.
  
- - Para apagar/alterar algum campo, selecione ele inteiro e digite o valor que deseja alterar
+ - Para apagar/alterar algum campo, selecione ele inteiro com o duplo clique e digite o que deseja alterar
  
 - No menu, à operações de:
    
@@ -32,5 +43,4 @@ Antes das informações gerais, primeiramente as informações críticas:
    
  OBSERVAÇÕES: 
  
- - Caso adicione um número de cartão, mas ele ja esteja cadastrado, provavelmente alguem ja utilizou esse valor, visto que o BD estará em um servidor com múltiplos acessos.
- 
+ - Caso adicione um número de cartão, mas ele ja esteja cadastrado, provavelmente alguem ja utilizou esse valor, visto que o BD estará      em um servidor com múltiplos acessos.
