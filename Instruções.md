@@ -7,7 +7,7 @@ Antes das informações gerais, primeiramente as informações críticas:
    
   - O código do SQL estará no GitGud tambem. Caso queira testar o banco de dados: 
     - Instale o SQL Server Management Studio 2017 (deve ser o 2017 por causa do M$ Azure)
-    - Caseo não apareça nenhuma tela de login, clique no canto superior esquerdo, em "Conectar" e depois em "Mecanismo de banco de             dados"
+    - Caso não apareça nenhuma tela de login, clique no canto superior esquerdo, em "Conectar" e depois em "Mecanismo de banco de             dados"
     - Na tela de login, em Tipo de servidor, deixe selecionado "Mecanismo de banco de dados"
     - Em "Nome do servidor", coloque "trabalhopoo-conta.database.windows.net"
     - Em "Autenticação", selecione "Autenticação do SQL Server"
